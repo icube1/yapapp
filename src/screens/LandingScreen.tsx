@@ -2,10 +2,13 @@ import React, {useState, useReducer, useEffect} from "react";
 import {View, Text, StyleSheet, Dimensions, Image} from 'react-native';
 
 import * as Location from 'expo-location';
+import { useNavigation } from "../utils";
 
 const screenWidth = Dimensions.get('screen').width;
 
 export const LandingScreen = () => {
+
+  const { navigate } = useNavigation();
 
   const [errorMsg, setErrorMsg] = useState('');
   const [adress, setAdress] = useState<Location.LocationGeocodedAddress>();
@@ -28,12 +31,21 @@ export const LandingScreen = () => {
 
         for(let item of adressResponse) {
           setAdress(item);
-          let currentAdress = `${item.name}, ${item.street},${item.country}`;
+          let currentAdress = `${item.street}, ${item.name}, ${item.city}`;
           setDisplayAdress(currentAdress);
-          return;
+
+          if(currentAdress.length > 0) {
+            setTimeout(() => {
+              navigate('homeStack')
+            }, 2000);
+          }
+
+          return
         }
+      }else {
+        //поповещение
       }
-    } )
+    })();
 
 
     }
@@ -42,21 +54,18 @@ export const LandingScreen = () => {
 
     return (
         <View style={styles.container}>
-          <View style={styles.navigation}>
-            <Text>Navigation</Text>
-          </View>
+          {/* <View style={styles.navigation}><Text>Япония</Text></View> */}
           <View style={styles.body}>
             <Image source={require('../images/map-icon.png')} style={styles.deliveryIcon} />
             <View style={styles.adressContainer}>
-              <Text style={styles.adressTitle}>Ваш адрес доставки</Text>
+              <Text style={styles.adressTitle} >Ваш адрес доставки</Text>
             </View>
+            <Text style={styles.adressText}>{displayAdress}</Text>
           </View>
 
-          <Text style={styles.adressText}>{displayAdress}</Text>
-
-          <View style={styles.footer}>
+          {/* <View style={styles.footer}>
             <Text>Footer</Text>
-          </View>
+          </View> */}
 
         </View>
     )
@@ -65,31 +74,33 @@ export const LandingScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: '#f5f5f5'
   },
   navigation: {
     flex: 2,
-    backgroundColor: 'beige'
+    backgroundColor: 'beige',
+    borderBottomColor: 'black',
+    borderBottomWidth: 0.5,
   },
   body: {
     flex: 9,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'beige'
+    backgroundColor: '#f5f5f5'
   },
   deliveryIcon: {
     width: 80,
     height: 80,
-    resizeMode: 'contain'
+    resizeMode: 'contain',
 
   },
   adressContainer: {
     width: screenWidth - 100,
-    borderBottomColor: 'red',
+    borderBottomColor: 'black',
     borderBottomWidth: 0.5,
     padding: 5,
     marginBottom: 10,
-    alignItems: 'center',
+    alignItems: 'center'
 
   },
 
@@ -98,13 +109,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     color: "#7D7D7D",
-
+    textAlign: 'center'
   },
   adressText: {
     fontFamily: 'Roboto',
     fontSize: 20,
     fontWeight: '200',
-    color: '#4F4F4F'
+    color: 'grey',
+
   },
 
   footer: {
