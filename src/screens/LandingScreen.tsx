@@ -2,11 +2,22 @@ import React, {useState, useReducer, useEffect} from "react";
 import {View, Text, StyleSheet, Dimensions, Image} from 'react-native';
 
 import * as Location from 'expo-location';
+
+import { connect } from "react-redux";
+import { onUpdateLocation, UserState, ApplicationState } from "../redux";
+
 import { useNavigation } from "../utils";
 
 const screenWidth = Dimensions.get('screen').width;
 
-export const LandingScreen = () => {
+interface LandingProps{
+  userReducer: UserState,
+  onUpdateLocation: Function,
+}
+
+export const _LandingScreen: React.FC<LandingProps> = (props) => {
+
+  const { userReducer, onUpdateLocation } = props;
 
   const { navigate } = useNavigation();
 
@@ -31,6 +42,7 @@ export const LandingScreen = () => {
 
         for(let item of adressResponse) {
           setAdress(item);
+          onUpdateLocation(item)
           let currentAdress = `${item.street}, ${item.name}, ${item.city}`;
           setDisplayAdress(currentAdress);
 
@@ -123,5 +135,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'beige'
   },
+});
 
+const mapToStateProps = (state: ApplicationState) => ({
+  userReducer: state.userReducer
 })
+
+const LandingScreen = connect(mapToStateProps, {onUpdateLocation})(_LandingScreen)
+
+export {LandingScreen}
