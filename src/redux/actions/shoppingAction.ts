@@ -1,5 +1,4 @@
 import axios from "axios";
-import { LocationGeocodedAddress } from "expo-location";
 import { Dispatch } from "react";
 import { BASE_URL } from "../../utils";
 import { FoodAvailability } from "../models";
@@ -18,13 +17,14 @@ export interface ShoppingErrorAction{
 export type ShoppingAction = AvailabilityAction | ShoppingErrorAction;
 
 export const onAvailability = (postCode: string) => {
-  console.log(postCode)
+  console.log(`postcode with request is ${postCode}`)
   return async (dispatch: Dispatch<ShoppingAction>) => {
 
     try {
 
-      const response = await axios.get<FoodAvailability>(`${BASE_URL}/food/availability/${postCode}`)
+      const response = await axios.get<FoodAvailability>(`${BASE_URL}/111111`)
 
+      console.log(response);
 
       if(!response) {
         dispatch({

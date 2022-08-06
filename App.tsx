@@ -9,6 +9,7 @@ import { store } from './src/redux';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
+import { SearchScreen } from './src/screens/SearchScreen';
 
 
 
@@ -29,7 +30,8 @@ const switchNavigator = createSwitchNavigator({
     //иконка домашней страницы
     home: {
       screen: createStackNavigator({
-        HomePage: HomeScreen
+        HomePage: HomeScreen,
+        SearchPage: SearchScreen
       },
       {
         defaultNavigationOptions: {
@@ -98,5 +100,6 @@ const styles = StyleSheet.create({
   tabIcon: {
     width: 30,
     height: 30,
+    marginTop: 10
   }
 });

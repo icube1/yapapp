@@ -1,7 +1,10 @@
 import React, {useEffect, useState } from "react";
-import {View, Text, StyleSheet, Dimensions, Image} from 'react-native';
+import {View, Text, StyleSheet, Dimensions, Image, ScrollView, FlatList} from 'react-native';
+
+import {useNavigation} from '../utils'
 
 import { connect } from "react-redux";
+import {ButtonWithIcon, SearchBar, CategoryCard} from "../components";
 import { onAvailability, UserState, ApplicationState, ShoppingState } from "../redux";
 
 
@@ -14,10 +17,12 @@ interface HomeProps{
 
 export const _HomeScreen: React.FC<HomeProps> = (props) => {
 
+  const { navigate } = useNavigation();
+
   const { location } = props.userReducer;
   const { availability } = props.shoppingReducer;
 
-  const { categories, foods, restaraunts } = availability;
+  const { categories, foods, restaurant } = availability;
   console.log(foods)
 
   useEffect(() => {
@@ -30,17 +35,28 @@ export const _HomeScreen: React.FC<HomeProps> = (props) => {
           <View style={styles.navigation}>
             <View style={styles.topBar} >
               <Text>{location.city},{location.street},{location.name}</Text>
-              <Text>  edit</Text>
+              <Text>Edit</Text>
             </View>
             <View style={styles.searchBar}>
-            <Text>Search bar</Text>
+              <SearchBar
+                onTextChange={() => {}}
+                didTouch={() => {
+                  navigate('SearchPage')
+                }}
+              />
+              <ButtonWithIcon onTap={ () => {} } icon={require('../images/list.png')} width={30} height={20} />
             </View>
           </View>
           <View style={styles.body}>
-            <Text>Home Screen</Text>
-          </View>
-          <View style={styles.footer}>
-            <Text>Footer</Text>
+            <ScrollView>
+              <FlatList
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                data={categories}
+                renderItem={({ item }) => <CategoryCard item={item} onTap={() => { alert('category tapped') }}/>}
+                keyExtractor={(item) => `${item.id}`}
+              />
+            </ScrollView>
           </View>
 
         </View>
@@ -60,7 +76,12 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     flex: 8,
-    backgroundColor: 'green'
+    backgroundColor: 'white',
+    justifyContent: "space-around",
+    height: 60,
+    flexDirection: 'row',
+    alignItems: "center",
+    marginLeft: 4
   },
   container: {
     flex: 1,
@@ -68,17 +89,18 @@ const styles = StyleSheet.create({
   },
   navigation: {
     flex: 2,
-    backgroundColor: 'red'
   },
   body: {
     flex: 9,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'yellow'
+
   },
   footer: {
     flex: 1,
-    backgroundColor: 'cyan'
+    backgroundColor: 'cyan',
+    paddingTop: 5
   }
 })
 

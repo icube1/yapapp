@@ -1,0 +1,66 @@
+import React, { useState, useEffect } from 'react'
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, Image } from 'react-native'
+
+interface SearchBarProps {
+  onEndEditing?: any | undefined;
+  didTouch?: any | undefined;
+  autoFocus?: boolean | undefined;
+  onTextChange: Function;
+ }
+
+
+const SearchBar: React.FC<SearchBarProps> = ({ onEndEditing, didTouch, autoFocus, onTextChange }) => {
+
+return (
+<View style={styles.container}>
+  <View style={styles.searchBar}>
+    <Image style={{ width: 25, height: 25, backgroundColor: 'white' }} source={require('../images/search.png')}/>
+    <TextInput
+    style={ styles.textInput }
+    placeholder={"Найти блюдо" }
+    autoFocus={autoFocus}
+    onTouchStart={didTouch}
+    onChangeText={(text) => onTextChange(text)}
+    onEndEditing={onEndEditing}
+    />
+  </View>
+</View>)}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    height: 60,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignContent: 'center',
+    alignItems: 'center',
+    paddingLeft: 20,
+    paddingRight: 20
+  },
+  searchBar: {
+    display: 'flex',
+    height: 32,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: 'white',
+    alignItems: 'center',
+    borderRadius: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderColor: 'black',
+    borderWidth: 2
+  },
+  textInput: {
+    marginLeft: 5,
+    flex: 9,
+    display: 'flex',
+    fontSize: 20,
+    height: 42
+  }
+});
+
+export { SearchBar }
+
