@@ -1,146 +1,154 @@
-import React, {useState, useReducer, useEffect} from "react";
-import {View, Text, StyleSheet, Dimensions, Image} from 'react-native';
 
-import * as Location from 'expo-location';
+import React, { useState, useReducer, useEffect } from 'react'
+import { View, Text, StyleSheet, Dimensions , Image } from 'react-native'
 
-import { connect } from "react-redux";
-import { onUpdateLocation, UserState, ApplicationState } from "../redux";
+import * as Location from 'expo-location'
 
-import { useNavigation } from "../utils";
 
-const screenWidth = Dimensions.get('screen').width;
+import { connect } from 'react-redux'
+import { onUpdateLocation, UserState, ApplicationState } from '../redux'
+
+
+import { useNavigation } from '../utils'
+
+
+const screenWidth = Dimensions.get('screen').width
+
+
 
 interface LandingProps{
-  userReducer: UserState,
-  onUpdateLocation: Function,
+    userReducer: UserState,
+    onUpdateLocation: Function
 }
 
-export const _LandingScreen: React.FC<LandingProps> = (props) => {
 
-  const { userReducer, onUpdateLocation } = props;
+ const _LandingScreen: React.FC<LandingProps> = (props) => {
 
-  const { navigate } = useNavigation();
+    const { userReducer, onUpdateLocation }  = props;
 
-  const [errorMsg, setErrorMsg] = useState('');
-  const [adress, setAdress] = useState<Location.LocationGeocodedAddress>();
+    const { navigate } = useNavigation()
 
-  const [displayAdress, setDisplayAdress] = useState('Ожидание получения адреса...');
+    const [errorMsg, setErrorMsg] = useState("")
+    const [address, setAddress] = useState<Location.Address>()
+    
+    const [displayAddress, setDisplayAddress] = useState("Waiting for Current Location")
 
-  useEffect(() => {
-    (async () => {
-      let {status} = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to acces location is not granted')
-      }
-
-      let location: any = await Location.getCurrentPositionAsync({});
-      const { coords } = location;
-
-      if (coords) {
-        const {latitude, longitude} = coords;
-        let adressResponse: any = await Location.reverseGeocodeAsync({latitude, longitude});
-
-        for(let item of adressResponse) {
-          setAdress(item);
-          onUpdateLocation(item)
-          let currentAdress = `${item.street}, ${item.name}, ${item.city}`;
-          setDisplayAdress(currentAdress);
-
-          if(currentAdress.length > 0) {
-            setTimeout(() => {
-              navigate('homeStack')
-            }, 2000);
-          }
-
-          return
-        }
-      }else {
-        //поповещение
-      }
-    })();
+    useEffect(() => {
 
 
-    }
-  , [])
+        (async () => {
+
+            let { status } = await Location.requestPermissionsAsync();
+
+            if (status !== 'granted'){
+                setErrorMsg('Permission to access location is not granted')
+            }
+
+            let location: any = await Location.getCurrentPositionAsync({});
+
+            const { coords } = location
+
+            if(coords){
+
+                const { latitude, longitude} = coords;
+
+                let addressResponse: any = await Location.reverseGeocodeAsync({ latitude, longitude})
+
+                for(let item of addressResponse){
+                    setAddress(item)
+                    onUpdateLocation(item)
+                    let currentAddress = `${item.name},${item.street}, ${item.postalCode}, ${item.country}`
+                    setDisplayAddress(currentAddress)
+
+                    if(currentAddress.length > 0){
+                        setTimeout(() =>{
+                            navigate('homeStack')
+                        }, 2000)
+                    }
 
 
+                    return;
+                }
+
+
+            }else{
+                //notify user something went wrong with location
+            }
+
+        })();
+
+
+
+    }, [])
+
+     
     return (
         <View style={styles.container}>
-          {/* <View style={styles.navigation}><Text>Япония</Text></View> */}
-          <View style={styles.body}>
-            <Image source={require('../images/map-icon.png')} style={styles.deliveryIcon} />
-            <View style={styles.adressContainer}>
-              <Text style={styles.adressTitle} >Ваш адрес доставки</Text>
+            <View style={styles.navigation} /> 
+                
+            <View style={styles.body}>
+                <Image source={require('../images/delivery_icon.png')} style={styles.deliveryIcon} />
+                <View style={styles.addressContainer}>
+                    <Text style={styles.addressTitle}>Your Delivery Address</Text>
+                </View>
+                <Text style={styles.addressText}> {displayAddress}</Text>
             </View>
-            <Text style={styles.adressText}>{displayAdress}</Text>
-          </View>
-
-          {/* <View style={styles.footer}>
-            <Text>Footer</Text>
-          </View> */}
-
+            <View style={styles.footer} />
         </View>
     )
+
 }
 
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5'
-  },
-  navigation: {
-    flex: 2,
-    backgroundColor: 'beige',
-    borderBottomColor: 'black',
-    borderBottomWidth: 0.5,
-  },
-  body: {
-    flex: 9,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5'
-  },
-  deliveryIcon: {
-    width: 80,
-    height: 80,
-    resizeMode: 'contain',
 
-  },
-  adressContainer: {
-    width: screenWidth - 100,
-    borderBottomColor: 'black',
-    borderBottomWidth: 0.5,
-    padding: 5,
-    marginBottom: 10,
-    alignItems: 'center'
+    container: {
+        flex: 1,
+        backgroundColor: 'rgba(242,242,242,1)'
+     },
+    navigation: {
+        flex: 2,
+     },
+    body: {
+        flex: 9,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    deliveryIcon:{
+        width: 120,
+        height: 120
+    },
+    addressContainer: {
+        width: screenWidth - 100,
+        borderBottomColor: 'red',
+        borderBottomWidth: 0.5,
+        padding: 5,
+        marginBottom: 10,
+        alignItems: 'center',
+        
+    },
+    addressTitle:{
+        fontSize: 22,
+        fontWeight: '700',
+        color: '#7D7D7D'
+    },
+    addressText: {
+        fontSize: 20,
+        fontWeight: '200',
+        color: '#4F4F4F'
+    },
 
-  },
+    footer: {
+        flex: 1,
+     }
 
-  adressTitle: {
-    fontFamily: 'Roboto',
-    fontSize: 24,
-    fontWeight: '700',
-    color: "#7D7D7D",
-    textAlign: 'center'
-  },
-  adressText: {
-    fontFamily: 'Roboto',
-    fontSize: 20,
-    fontWeight: '200',
-    color: 'grey',
-
-  },
-
-  footer: {
-    flex: 1,
-    backgroundColor: 'beige'
-  },
-});
-
-const mapToStateProps = (state: ApplicationState) => ({
-  userReducer: state.userReducer
 })
 
-const LandingScreen = connect(mapToStateProps, {onUpdateLocation})(_LandingScreen)
 
-export {LandingScreen}
+const mapToStateProps = (state: ApplicationState) => ({
+    userReducer: state.userReducer
+})
+
+const LandingScreen = connect(mapToStateProps, { onUpdateLocation })(_LandingScreen)
+
+export { LandingScreen }

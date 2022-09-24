@@ -1,58 +1,63 @@
-import { LocationGeocodedAddress } from "expo-location";
-//категория
+import { Address } from 'expo-location'
+
+
+// category
 export interface Category{
-  id: string;
-  title: String;
-  icon: String;
+    id: string,
+    title: String,
+    icon: String
 }
 
 
-//меню
-
+// Food Model
 export interface FoodModel{
-  _id: string;
-  name: string;
-  description: string;
-  category: string;
-  price: number;
-  image: [string];
+    _id: string;
+    name: string;
+    description: string;
+    category: string;
+    price: number;
+    readyTime: number;
+    images: [string];
+    unit: number;
 }
-
-//ресторан
-
+ 
+//Restaurant Model
 export interface Restaurant{
-  _id: string;
-  name: string;
-  foodType: string;
-  adress: string;
-  phone: string;
-  images: string;
-  foods: [FoodModel];
+    _id: string;
+    name: string;
+    foodType: string;
+    address: string;
+    phone: string;
+    images: string;
+    foods: [FoodModel];
 }
 
 export interface FoodAvailability{
-  categories: [Category];
-  restaurant: [Restaurant];
-  foods: [FoodModel];
+    categories: [Category];
+    restaurants: [Restaurant];
+    foods: [FoodModel]
 }
-
-//todo: позже изменить
-
-//пользователь
+ 
+//todo : Modify later
+//User Model
 export interface UserModel{
-  firstName: string;
-  lastName: string;
-  contactNumber: string;
-  token: string;
+    firstName: string;
+    lastName: String;
+    contactNumber: String;
+    token: string,
+    varified: boolean
 }
-
+ 
 export interface UserState{
-  user: UserModel;
-  location: LocationGeocodedAddress;
-  error: string | undefined;
+    user: UserModel;
+    location: Address;
+    error: string | undefined;
+    Cart: [FoodModel];
+     //orders
 }
 
 export interface ShoppingState{
-  availability: FoodAvailability,
-  //другие модели
+    availability: FoodAvailability,
+    availableFoods: [FoodModel]
+    //other models
 }
