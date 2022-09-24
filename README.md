@@ -1,4 +1,7 @@
 # yapapp
 online food delivery app created with typescript, react native, redux, expo
 
-this is still a work in progress
+![alt text](./src/components/images/yapapp 1) ![alt text](./src/components/images/yapapp 2)
+
+![alt text](./src/components/images/yapapp 3) ![alt text](./src/components/images/yapapp 4)
+
